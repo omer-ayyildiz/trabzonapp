@@ -27,7 +27,7 @@ jobs:
       - name: Build web
         run: |
           flutter clean
-          flutter build web --release --base-href="/ayyildiz/" --pwa-strategy=none
+          flutter build web --release --base-href="/trabzonapp/" --pwa-strategy=none
           cp build/web/index.html build/web/404.html
 
       - name: Deploy to GitHub Pages

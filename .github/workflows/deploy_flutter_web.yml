@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+env:
+  # Repo adını otomatik al (base-href için)
+  REPO_NAME: ${{ github.event.repository.name }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -15,11 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Flutter (beta)
+      - name: Set up Flutter (stable)
         uses: subosito/flutter-action@v2
         with:
-          channel: beta
-          flutter-version: "3.35.0-0.2.pre"
+          channel: stable
+          flutter-version: "3.32.x"
 
       - name: Flutter pub get
         run: flutter pub get
@@ -27,8 +31,10 @@ jobs:
       - name: Build web
         run: |
           flutter clean
-          flutter build web --release --base-href="/trabzonapp/" --pwa-strategy=none
+          flutter build web --release --base-href="/${REPO_NAME}/" --pwa-strategy=none
           cp build/web/index.html build/web/404.html
+          echo "Base href satırı:"
+          grep -n 'base href' build/web/index.html || true
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
